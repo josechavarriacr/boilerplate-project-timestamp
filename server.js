@@ -24,7 +24,37 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+// Handle no date_string q
+app.get('/api/timestamp/', (req, res) => {
+  let date = new Date();
+  
+  res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
+  
+});
 
+// Timestamp functionality...
+app.get('/api/timestamp/:date_string?', (req, res) => {
+  // Get query from URL
+  let input = req.params.date_string;
+  let date;
+
+  if (!isNaN(input)) {
+    date = new Date(parseInt(input));
+  } else {
+    date = new Date(input);
+  };
+  
+  // Then check if invalid:
+  if (date.toString() === 'Invalid Date') {
+    res.json({ "error": date.toString() });
+  } else {
+  // Finally return if valid:
+    res.json({"unix": date.getTime(), "utc" : date.toUTCString() });
+  }
+  ////
+  // Reading this article helped me: https://medium.com/@baris.ture/freecodecamp-apis-and-microservices-timestamp-microservice-project-a586e0ab0e0e
+  ////
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
